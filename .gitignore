@@ -27,3 +27,13 @@
 *.exe
 *.out
 *.app
+
+# VS temp files
+*.ide
+*.suo
+
+# Build artifacts
+*/bin/Debug
+*/obj/Debug
+*/bin/Release
+*/obj/Release
