@@ -1,5 +1,5 @@
 # mosaic
-Photo mosaic builder app
+Idea for a photo mosaic builder app
 
 Given a supplied photo and grid size, crawl over photos sourced asyncronously from a webservice, find those with colour and content matching some region of the target photo, and add to the mosaic.
 
