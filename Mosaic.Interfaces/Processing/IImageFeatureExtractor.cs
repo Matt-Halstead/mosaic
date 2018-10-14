@@ -1,9 +1,9 @@
-﻿using Mosaic.Interfaces.ImageSource;
+﻿using System.Drawing;
 
-namespace Mosaic.ImageSource.Processing
+namespace Mosaic.Interfaces.Processing
 {
     public interface IImageFeatureExtractor
     {
-        IImageFeatureSet ExtractFeatures(IImage image);
+        IImageFeatureSet ExtractFeatures(Image image);
     }
 }

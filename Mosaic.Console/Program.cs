@@ -1,8 +1,10 @@
 ﻿using Mosaic.Core;
 using Mosaic.Imgur;
-using Mosaic.Interfaces.ImageSource;
 using System;
+using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,14 +15,8 @@ namespace Mosaic.Console
         private static readonly CancellationTokenSource _cancellation = new CancellationTokenSource();
         private static readonly AutoResetEvent _completedEvent = new AutoResetEvent(false);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="args"></param>
         static void Main(string[] args)
         {
-            InitIoC();
-
             Start(_cancellation.Token);
             WaitForCancellationOrCompletion().Wait();
 
@@ -61,18 +57,24 @@ namespace Mosaic.Console
         {
             return Task.Run(async () =>
             {
-                var resolver = IoC.Resolve<IImageQueryResolver>();
-                var queryResult = await resolver.Resolve(new ImgurQuery("dogs", "png"), cancelToken);
+                var targetSize = new Size(1920, 1080);
+                var gridSize = new Size(64, 40);
+                Image targetImage = null;
 
-                int w = queryResult.Images.FirstOrDefault()?.RawImage.Width ?? 0;
+                var assembly = Assembly.GetExecutingAssembly();
+                var resourceName = "Mosaic.Console.TestImage.png";
+                using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+                {
+                    targetImage = Image.FromStream(stream);
+                }
+
+                var mosaic = new Mosaic.Core.Mosaic(targetImage, targetSize, gridSize);
+                var imageSource = new ImgurImageSource();
+                var featureExtractor = new BasicImageFeatureExtractor();
+                var resultImage = mosaic.Build(imageSource, featureExtractor);
 
                 _completedEvent.Set();
             });
-        }
-
-        private static void InitIoC()
-        {
-            IoC.RegisterInstance<IImageQueryResolver>(new ImgurQueryResolver());
         }
     }
 }

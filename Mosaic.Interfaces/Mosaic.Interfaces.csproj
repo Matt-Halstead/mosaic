@@ -52,7 +52,6 @@
     <Compile Include="Processing\IImageFeatureExtractor.cs" />
     <Compile Include="Processing\IImageFeatureSet.cs" />
     <Compile Include="Processing\IMosaic.cs" />
-    <Compile Include="Processing\IMosaicBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

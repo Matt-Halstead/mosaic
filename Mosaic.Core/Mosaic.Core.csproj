@@ -32,6 +32,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -40,8 +41,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BasicImageFeatureExtractor.cs" />
+    <Compile Include="BasicImageFeatureSet.cs" />
     <Compile Include="IoC.cs" />
+    <Compile Include="Mosaic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Mosaic.Interfaces\Mosaic.Interfaces.csproj">
+      <Project>{24AC7D7A-4073-4C8D-9229-7C18BCCCA641}</Project>
+      <Name>Mosaic.Interfaces</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

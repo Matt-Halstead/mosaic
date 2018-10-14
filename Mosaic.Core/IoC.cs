@@ -1,62 +1,64 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// TODO: dont really need this yet.
 
-namespace Mosaic.Core
-{
-    // Rolling my own basic IoC container
-    public static class IoC
-    {
-        private static Dictionary<Type, object> _registeredInstances = new Dictionary<Type, object>();
+//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Text;
+//using System.Threading.Tasks;
 
-        public static void RegisterInstance<T>(object concreteInstance)
-            where T : class
-        {
-            RegisterInstance(typeof(T), concreteInstance);
-        }
+//namespace Mosaic.Core
+//{
+//    // Rolling my own basic IoC container
+//    public static class IoC
+//    {
+//        private static Dictionary<Type, object> _registeredInstances = new Dictionary<Type, object>();
 
-        public static void RegisterInstance(Type interfaceType, object concreteInstance)
-        {
-            if (interfaceType == null)
-            {
-                throw new ArgumentException($"{nameof(interfaceType)} must not be null.");
-            }
+//        public static void RegisterInstance<T>(object concreteInstance)
+//            where T : class
+//        {
+//            RegisterInstance(typeof(T), concreteInstance);
+//        }
 
-            if (!interfaceType.IsInterface)
-            {
-                throw new ArgumentException($"{nameof(interfaceType)} must be an interface.");
-            }
+//        public static void RegisterInstance(Type interfaceType, object concreteInstance)
+//        {
+//            if (interfaceType == null)
+//            {
+//                throw new ArgumentException($"{nameof(interfaceType)} must not be null.");
+//            }
 
-            if (concreteInstance == null)
-            {
-                throw new ArgumentException($"{nameof(concreteInstance)} must not be null.");
-            }
+//            if (!interfaceType.IsInterface)
+//            {
+//                throw new ArgumentException($"{nameof(interfaceType)} must be an interface.");
+//            }
 
-            var concreteType = concreteInstance.GetType();
-            if (!interfaceType.IsAssignableFrom(concreteType))
-            {
-                throw new ArgumentException($"{concreteType.Name} is not an instance of interface {nameof(interfaceType)}.");
-            }
+//            if (concreteInstance == null)
+//            {
+//                throw new ArgumentException($"{nameof(concreteInstance)} must not be null.");
+//            }
 
-            if (_registeredInstances.TryGetValue(interfaceType, out object value))
-            {
-                throw new ArgumentException($"{nameof(interfaceType)} is already mapped to instance of type {concreteType.Name}.");
-            }
+//            var concreteType = concreteInstance.GetType();
+//            if (!interfaceType.IsAssignableFrom(concreteType))
+//            {
+//                throw new ArgumentException($"{concreteType.Name} is not an instance of interface {nameof(interfaceType)}.");
+//            }
 
-            _registeredInstances[interfaceType] = concreteInstance;
-        }
+//            if (_registeredInstances.TryGetValue(interfaceType, out object value))
+//            {
+//                throw new ArgumentException($"{nameof(interfaceType)} is already mapped to instance of type {concreteType.Name}.");
+//            }
 
-        public static T Resolve<T>()
-            where T : class
-        {
-            if (!_registeredInstances.TryGetValue(typeof(T), out object value))
-            {
-                throw new ApplicationException($"No concrete instance registered for interface {typeof(T).Name}");
-            }
+//            _registeredInstances[interfaceType] = concreteInstance;
+//        }
 
-            return value as T;
-        }
-    }
-}
+//        public static T Resolve<T>()
+//            where T : class
+//        {
+//            if (!_registeredInstances.TryGetValue(typeof(T), out object value))
+//            {
+//                throw new ApplicationException($"No concrete instance registered for interface {typeof(T).Name}");
+//            }
+
+//            return value as T;
+//        }
+//    }
+//}
