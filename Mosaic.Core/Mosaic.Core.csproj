@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5FECA6A8-3760-4D74-BB19-4E8DF3CBE891}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>Mosaic.Console</RootNamespace>
-    <AssemblyName>Mosaic.Console</AssemblyName>
+    <ProjectGuid>{7BF800E3-7540-4082-A1D6-31678051FAFE}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Mosaic.Core</RootNamespace>
+    <AssemblyName>Mosaic.Core</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>$(SolutionDir)\bin\$(Platform)\$(Configuration)</OutputPath>
@@ -34,7 +32,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -43,25 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="IoC.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Mosaic.Core\Mosaic.Core.csproj">
-      <Project>{7bf800e3-7540-4082-a1d6-31678051fafe}</Project>
-      <Name>Mosaic.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Mosaic.ImageSource\Mosaic.ImageSource.csproj">
-      <Project>{315eb6e7-cd42-486c-b1c4-e184409f418c}</Project>
-      <Name>Mosaic.ImageSource</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Mosaic.Interfaces\Mosaic.Interfaces.csproj">
-      <Project>{24ac7d7a-4073-4c8d-9229-7c18bccca641}</Project>
-      <Name>Mosaic.Interfaces</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

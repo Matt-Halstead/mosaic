@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5FECA6A8-3760-4D74-BB19-4E8DF3CBE891}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>Mosaic.Console</RootNamespace>
-    <AssemblyName>Mosaic.Console</AssemblyName>
+    <ProjectGuid>{315EB6E7-CD42-486C-B1C4-E184409F418C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Mosaic.ImageSource</RootNamespace>
+    <AssemblyName>Mosaic.ImageSource</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>$(SolutionDir)\bin\$(Platform)\$(Configuration)</OutputPath>
@@ -32,9 +30,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -43,23 +45,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="ImgurQueryResolver.cs" />
+    <Compile Include="ImgurQuery.cs" />
+    <Compile Include="ImgurQueryResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mosaic.Core\Mosaic.Core.csproj">
       <Project>{7bf800e3-7540-4082-a1d6-31678051fafe}</Project>
       <Name>Mosaic.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Mosaic.ImageSource\Mosaic.ImageSource.csproj">
-      <Project>{315eb6e7-cd42-486c-b1c4-e184409f418c}</Project>
-      <Name>Mosaic.ImageSource</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Mosaic.Interfaces\Mosaic.Interfaces.csproj">
-      <Project>{24ac7d7a-4073-4c8d-9229-7c18bccca641}</Project>
+      <Project>{24AC7D7A-4073-4C8D-9229-7C18BCCCA641}</Project>
       <Name>Mosaic.Interfaces</Name>
     </ProjectReference>
   </ItemGroup>

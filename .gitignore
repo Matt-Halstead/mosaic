@@ -37,3 +37,8 @@
 */obj/Debug
 */bin/Release
 */obj/Release
+/bin/AnyCPU/Debug
+/obj/AnyCPU/Debug
+/bin/AnyCPU/Release
+/obj/AnyCPU/Release
+packages/
