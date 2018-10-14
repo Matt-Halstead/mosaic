@@ -54,9 +54,9 @@
       <Project>{7bf800e3-7540-4082-a1d6-31678051fafe}</Project>
       <Name>Mosaic.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Mosaic.ImageSource\Mosaic.ImageSource.csproj">
+    <ProjectReference Include="..\Mosaic.Imgur\Mosaic.Imgur.csproj">
       <Project>{315eb6e7-cd42-486c-b1c4-e184409f418c}</Project>
-      <Name>Mosaic.ImageSource</Name>
+      <Name>Mosaic.Imgur</Name>
     </ProjectReference>
     <ProjectReference Include="..\Mosaic.Interfaces\Mosaic.Interfaces.csproj">
       <Project>{24ac7d7a-4073-4c8d-9229-7c18bccca641}</Project>

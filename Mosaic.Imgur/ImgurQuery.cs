@@ -1,6 +1,6 @@
 ﻿using Mosaic.Interfaces.ImageSource;
 
-namespace Mosaic.ImageSource
+namespace Mosaic.Imgur
 {
     public class ImgurQuery : IImageQuery
     {

@@ -7,8 +7,8 @@
     <ProjectGuid>{315EB6E7-CD42-486C-B1C4-E184409F418C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Mosaic.ImageSource</RootNamespace>
-    <AssemblyName>Mosaic.ImageSource</AssemblyName>
+    <RootNamespace>Mosaic.Imgur</RootNamespace>
+    <AssemblyName>Mosaic.Imgur</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

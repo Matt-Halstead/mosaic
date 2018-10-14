@@ -1,5 +1,5 @@
 ﻿using Mosaic.Core;
-using Mosaic.ImageSource;
+using Mosaic.Imgur;
 using Mosaic.Interfaces.ImageSource;
 using System;
 using System.Linq;

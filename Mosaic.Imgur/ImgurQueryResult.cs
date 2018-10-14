@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 
-namespace Mosaic.ImageSource
+namespace Mosaic.Imgur
 {
     public class ImgurQueryResult : IImageQueryResult
     {
