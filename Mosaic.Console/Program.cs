@@ -58,7 +58,7 @@ namespace Mosaic.Console
             return Task.Run(async () =>
             {
                 var targetSize = new Size(1920, 1080);
-                var gridSize = new Size(64, 40);
+                var gridSize = new Size(128, 80);
                 Image targetImage = null;
 
                 var assembly = Assembly.GetExecutingAssembly();
@@ -69,7 +69,7 @@ namespace Mosaic.Console
                 }
 
                 var mosaic = new Mosaic.Core.Mosaic(targetImage, targetSize, gridSize);
-                var imageSource = new ImgurImageSource(new ImgurQuery("dogs", "png"), cancelToken);
+                var imageSource = new ImgurImageSource(new ImgurQuery("title: dog"), cancelToken);
                 var featureExtractor = new BasicImageFeatureExtractor();
                 var resultImage = await mosaic.Build(imageSource, featureExtractor, cancelToken);
 

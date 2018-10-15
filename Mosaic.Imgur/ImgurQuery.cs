@@ -4,15 +4,11 @@ namespace Mosaic.Imgur
 {
     public class ImgurQuery : IImageQuery
     {
-        public ImgurQuery(string title, string ext)
+        public ImgurQuery(string queryString)
         {
-            Title = title;
-            Extension = ext;
+            QueryString = queryString;
         }
 
-        public string Title { get; private set; }
-        public string Extension { get; private set; }
-
-        public string GetFormattedParams() => $"title: {Title} ext: {Extension}";
+        public string QueryString { get; private set; }
     }
 }

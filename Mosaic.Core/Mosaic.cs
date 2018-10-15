@@ -77,11 +77,9 @@ namespace Mosaic.Core
 
         public void SetCompletedCell(int row, int col, Image cellImage)
         {
-            var isSet = _completedCells[row, col] == null;
-            _completedCells[row, col] = cellImage;
-
-            if (!isSet)
+            if (_completedCells[row, col] == null)
             {
+                _completedCells[row, col] = cellImage;
                 _completedCellCount++;
             }
         }
@@ -96,7 +94,11 @@ namespace Mosaic.Core
                     for (int c = 0; c < GridSize.Width; c++)
                     {
                         var cellImage = _completedCells[r, c] ?? GetTargetCell(r, c).Image;
-                        g.DrawImage(cellImage, CellSize.Width * c, CellSize.Height * r, cellImage.Width, cellImage.Height);
+                        g.DrawImage(
+                            cellImage,
+                            new Rectangle(CellSize.Width * c, CellSize.Height * r, CellSize.Width, CellSize.Height),
+                            new Rectangle(0, 0, cellImage.Width, cellImage.Height),
+                            GraphicsUnit.Pixel);
                     }
                 }
             }
@@ -136,30 +138,37 @@ namespace Mosaic.Core
         {
             return Task.Run(async () =>
             {
-                var cells = (from r in Enumerable.Range(0, GridSize.Height)
-                             from c in Enumerable.Range(0, GridSize.Width)
-                             select new { r, c } )
-                             .ToList();
-                    
-
                 while (!cancelToken.IsCancellationRequested)
                 {
                     var nextImage = await imageSource.GetNextImage(cancelToken);
                     if (nextImage != null)
                     {
-                        var features = featureExtractor.ExtractFeatures(nextImage.RawImage);
+                        var nextImageReduced = new Bitmap(nextImage.RawImage, CellSize);
+                        var features = featureExtractor.ExtractFeatures(nextImageReduced);
 
-                        var remaining = cells.Where(cell => GetCompletedCell(cell.r, cell.c) == null).ToList();
-                        foreach (var cell in remaining)
+                        bool isMatch = false;
+                        for (int r = 0; r < GridSize.Height; r++)
                         {
-                            if (features.IsMatch(GetTargetCell(cell.r, cell.c)))
+                            if (isMatch)
                             {
-                                SetCompletedCell(cell.r, cell.c, features.Image);
-
-                                System.Console.WriteLine($"!! MATCH found for target cell r:{cell.r}, c:{cell.c}");
                                 break;
                             }
+
+                            for (int c = 0; c < GridSize.Width; c++)
+                            {
+                                if (GetCompletedCell(r, c) == null && features.IsMatch(GetTargetCell(r, c)))
+                                {
+                                    SetCompletedCell(r, c, nextImageReduced);
+                                    //isMatch = true;
+
+                                    var remaining = GridSize.Width * GridSize.Height - _completedCellCount;
+                                    System.Console.WriteLine($"!! MATCH found for image id: '{nextImage.Id}' for target cell r:{r}, c:{c}.  Remaining: {remaining}");
+                                    break;
+                                }
+                            }
                         }
+
+                        nextImage.RawImage.Dispose();
                     }
                     else
                     {

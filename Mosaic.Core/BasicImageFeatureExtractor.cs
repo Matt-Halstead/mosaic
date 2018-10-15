@@ -22,7 +22,7 @@ namespace Mosaic.Core
 
     internal class ColorHistogram
     {
-        private readonly Dictionary<Color, int> _histo = new Dictionary<Color, int>();
+        //private readonly Dictionary<Color, int> _histo = new Dictionary<Color, int>();
 
         public GreyScaleHistogram RedHistogram { get; private set; }
         public GreyScaleHistogram GreenHistogram { get; private set; }
@@ -34,24 +34,24 @@ namespace Mosaic.Core
             GreenHistogram = new GreyScaleHistogram(image, GreyScaleHistogram.Channel.G);
             BlueHistogram = new GreyScaleHistogram(image, GreyScaleHistogram.Channel.B);
 
-            Bitmap bm = (Bitmap)image;
+            //Bitmap bm = (Bitmap)image;
 
-            for (int x = 0; x < bm.Width; x++)
-            {
-                for (int y = 0; y < bm.Height; y++)
-                {
-                    Color c = bm.GetPixel(x, y);
+            //for (int x = 0; x < bm.Width; x++)
+            //{
+            //    for (int y = 0; y < bm.Height; y++)
+            //    {
+            //        Color c = bm.GetPixel(x, y);
 
-                    if (_histo.TryGetValue(c, out int count))
-                    {
-                        _histo[c] = count + 1;
-                    }
-                    else
-                    {
-                        _histo.Add(c, 1);
-                    }
-                }
-            }
+            //        if (_histo.TryGetValue(c, out int count))
+            //        {
+            //            _histo[c] = count + 1;
+            //        }
+            //        else
+            //        {
+            //            _histo.Add(c, 1);
+            //        }
+            //    }
+            //}
         }
     }
 

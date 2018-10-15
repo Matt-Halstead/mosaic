@@ -23,20 +23,25 @@ namespace Mosaic.Imgur
 
         public Task<IImage> GetNextImage(CancellationToken cancelToken)
         {
-            return Task.Run(() =>
+            return Task.Run(async () =>
             {
                 while (!cancelToken.IsCancellationRequested)
                 {
-                    IImage image;
-                    if (_completedDownloads.TryDequeue(out image))
+                    // kick off next downloads
+                    if (_queuedDownloads.TryDequeue(out IImage nextImage))
+                    {
+                        _completedDownloads.Enqueue(await nextImage.LoadImage());
+                    }
+
+                    if (_completedDownloads.TryDequeue(out IImage image))
                     {
                         return image;
                     }
 
-                    Thread.Sleep(200);
+                    Thread.Sleep(100);
                 }
 
-                System.Console.WriteLine("There are no more images to donwload.");
+                System.Console.WriteLine("There are no more images to download.");
                 return null;
             });
         }
@@ -47,15 +52,12 @@ namespace Mosaic.Imgur
             {
                 while (!cancelToken.IsCancellationRequested)
                 {
-                    if (_queuedDownloads.TryDequeue(out IImage image))
-                    {
-                        _completedDownloads.Enqueue(await image.LoadImage());
-                    }
-                    else
+                    if (!_queuedDownloads.TryPeek(out IImage image))
                     {
                         await GetNextBatchOfImages(cancelToken);
-                        Thread.Sleep(250);
                     }
+
+                    Thread.Sleep(5000);
                 }
 
                 System.Console.WriteLine("STOPPED downloading images.");

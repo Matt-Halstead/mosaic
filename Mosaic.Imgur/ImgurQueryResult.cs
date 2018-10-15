@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Mosaic.Imgur
 {
@@ -25,6 +26,8 @@ namespace Mosaic.Imgur
         {
             //System.Console.WriteLine($"Parsing response:\n{json.ToString()}");
 
+            var excluded = new string[] { "image/gif", "video/mp4" };
+
             if (json != null)
             {
                 foreach (var child in json["data"].Children())
@@ -41,11 +44,15 @@ namespace Mosaic.Imgur
                         {
                             foreach (var imageDef in imageDefs.Children())
                             {
-                                if (imageDef["type"].Value<string>() != "image/gif")
+                                var type = imageDef["type"].Value<string>();
+                                if (!excluded.Contains(type, StringComparer.OrdinalIgnoreCase) &&
+                                    imageDef["width"].Value<int>() < 2000 &&
+                                    imageDef["height"].Value<int>() < 2000)
                                 {
                                     var image = new ImgurImage(
                                         imageDef["id"].Value<string>() ?? albumId,
                                         imageDef["title"].Value<string>() ?? albumTitle,
+                                        type,
                                         new Uri(imageDef["link"].Value<string>()),
                                         child["tags"].Children()["name"].Values<string>());
 

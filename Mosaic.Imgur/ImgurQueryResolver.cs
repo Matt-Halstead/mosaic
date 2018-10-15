@@ -17,6 +17,8 @@ namespace Mosaic.Imgur
     {
         public const string ImgurClientToken = "Client-ID 6a3bd1babe3bb8c";
 
+        private int _page = 1;
+
         public Task<IImageQueryResult> ExecuteQuery(IImageQuery imageQuery, CancellationToken cancelToken)
         {
             return Task.Run(async () =>
@@ -29,8 +31,9 @@ namespace Mosaic.Imgur
                     {
                         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                        var url = @"https://api.imgur.com/3/gallery/search/top//1";
-                        var query = FormatQueryString(Tuple.Create("q", imageQuery.GetFormattedParams()));
+                        //var url = @"https://api.imgur.com/3/gallery/search/top//1";
+                        var url = $@"https://api.imgur.com/3/gallery/search//{_page++}";
+                        var query = FormatQueryString(Tuple.Create("q", imageQuery.QueryString));
                         client.DefaultRequestHeaders.Add("Authorization", ImgurClientToken);
 
                         using (HttpResponseMessage response = await client.GetAsync($"{url}{query}"))
@@ -59,7 +62,8 @@ namespace Mosaic.Imgur
             return queryString;
         }
 
-        private void EnsureFolderExists(string path)
+        // todo, move to util assembly
+        public static void EnsureFolderExists(string path)
         {
             var folders = path.Split('\\');
             var current = string.Empty;

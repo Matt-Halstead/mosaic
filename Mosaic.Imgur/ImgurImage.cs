@@ -11,10 +11,11 @@ namespace Mosaic.Imgur
 {
     internal class ImgurImage : IImage
     {
-        public ImgurImage(string id, string title, Uri link, IEnumerable<string> tags)
+        public ImgurImage(string id, string title, string contentType, Uri link, IEnumerable<string> tags)
         {
             Id = id;
             Title = title;
+            ContentType = contentType;
             Link = link;
             Tags.AddRange(tags);
         }
@@ -25,7 +26,6 @@ namespace Mosaic.Imgur
             {
                 HttpClient client = new HttpClient();
                 client.MaxResponseContentBufferSize = 256000;
-                //client.DefaultRequestHeaders.Add("Authorization", ImgurQueryResolver.ImgurClientToken);
                 Image img = Image.FromStream(await client.GetStreamAsync(Link));
 
                 RawImage = img;
@@ -41,6 +41,7 @@ namespace Mosaic.Imgur
 
         public string Id { get; private set; }
         public string Title { get; private set; }
+        public string ContentType { get; private set; }
         public List<string> Tags { get; private set; } = new List<string>();
         public Uri Link { get; private set; }
 
