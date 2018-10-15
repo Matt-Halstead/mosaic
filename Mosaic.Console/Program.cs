@@ -2,6 +2,7 @@
 using Mosaic.Imgur;
 using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Reflection;
 using System.Threading;
@@ -68,7 +69,7 @@ namespace Mosaic.Console
                 }
 
                 var mosaic = new Mosaic.Core.Mosaic(targetImage, targetSize, gridSize);
-                var imageSource = new ImgurImageSource();
+                var imageSource = new ImgurImageSource(new ImgurQuery("dogs", "png"), cancelToken);
                 var featureExtractor = new BasicImageFeatureExtractor();
                 var resultImage = await mosaic.Build(imageSource, featureExtractor, cancelToken);
 
@@ -81,7 +82,7 @@ namespace Mosaic.Console
         private static void DumpToTempFile(Image resultImage)
         {
             var tempFile = Path.GetTempFileName();
-            resultImage.Save(tempFile);
+            resultImage.Save(tempFile, ImageFormat.Png);
 
             var targetFolder = Path.Combine(Path.GetTempPath(), "mosaic");
             Directory.CreateDirectory(targetFolder);

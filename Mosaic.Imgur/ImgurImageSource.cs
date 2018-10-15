@@ -1,7 +1,5 @@
 ﻿using Mosaic.Interfaces.ImageSource;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,44 +10,68 @@ namespace Mosaic.Imgur
         private readonly IImageQuery _query;
         private readonly IImageQueryResolver _queryResolver;
 
-        private Queue<IImage> _cachedImages = new Queue<IImage>();
+        private ConcurrentQueue<IImage> _queuedDownloads = new ConcurrentQueue<IImage>();
+        private ConcurrentQueue<IImage> _completedDownloads = new ConcurrentQueue<IImage>();
 
-        public ImgurImageSource(IImageQuery query = null)
+        public ImgurImageSource(IImageQuery query, CancellationToken cancelToken)
         {
-            _query = query ?? new ImgurQuery("dogs", "png");
+            _query = query;
             _queryResolver = new ImgurQueryResolver();
+
+            StartDownloadingImages(cancelToken);
         }
 
         public Task<IImage> GetNextImage(CancellationToken cancelToken)
         {
-            return Task.Run(async () =>
+            return Task.Run(() =>
             {
-                if (_cachedImages.Count() > 0)
+                while (!cancelToken.IsCancellationRequested)
                 {
-                    return _cachedImages.Dequeue();
+                    IImage image;
+                    if (_completedDownloads.TryDequeue(out image))
+                    {
+                        return image;
+                    }
+
+                    Thread.Sleep(200);
                 }
 
-                var images = await GetBatchOfImages(cancelToken);
-                foreach (var image in images)
-                {
-                    _cachedImages.Enqueue(image);
-                }
-
-                if (_cachedImages.Count() > 0)
-                {
-                    return _cachedImages.Dequeue();
-                }
-
+                System.Console.WriteLine("There are no more images to donwload.");
                 return null;
             });
         }
 
-        internal Task<List<IImage>> GetBatchOfImages(CancellationToken cancelToken)
+        private Task StartDownloadingImages(CancellationToken cancelToken)
         {
             return Task.Run(async () =>
             {
-                var queryResult = await _queryResolver.Resolve(_query, cancelToken);
-                return queryResult.Images.ToList();
+                while (!cancelToken.IsCancellationRequested)
+                {
+                    if (_queuedDownloads.TryDequeue(out IImage image))
+                    {
+                        _completedDownloads.Enqueue(await image.LoadImage());
+                    }
+                    else
+                    {
+                        await GetNextBatchOfImages(cancelToken);
+                        Thread.Sleep(250);
+                    }
+                }
+
+                System.Console.WriteLine("STOPPED downloading images.");
+            });
+        }
+
+        private Task GetNextBatchOfImages(CancellationToken cancelToken)
+        {
+            return Task.Run(async () =>
+            {
+                var queryResult = await _queryResolver.ExecuteQuery(_query, cancelToken);
+
+                foreach (var image in queryResult.Images)
+                {
+                    _queuedDownloads.Enqueue(image);
+                }
             });
         }
     }

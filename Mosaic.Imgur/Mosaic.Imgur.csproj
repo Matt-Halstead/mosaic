@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ImgurImage.cs" />
     <Compile Include="ImgurImageSource.cs" />
     <Compile Include="ImgurQueryResolver.cs" />
     <Compile Include="ImgurQuery.cs" />

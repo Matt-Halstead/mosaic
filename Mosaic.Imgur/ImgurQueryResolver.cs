@@ -2,8 +2,6 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -15,16 +13,11 @@ using System.Web;
 
 namespace Mosaic.Imgur
 {
-    internal class ImgurImage : IImage
+    internal class ImgurQueryResolver : IImageQueryResolver
     {
-        public Image RawImage => new Bitmap(10, 10, PixelFormat.Format32bppArgb);
-    }
+        public const string ImgurClientToken = "Client-ID 6a3bd1babe3bb8c";
 
-    public class ImgurQueryResolver : IImageQueryResolver
-    {
-        private const string ImgurClientToken = "Client-ID 6a3bd1babe3bb8c";
-
-        public Task<IImageQueryResult> Resolve(IImageQuery imageQuery, CancellationToken cancelToken)
+        public Task<IImageQueryResult> ExecuteQuery(IImageQuery imageQuery, CancellationToken cancelToken)
         {
             return Task.Run(async () =>
             {
@@ -57,58 +50,6 @@ namespace Mosaic.Imgur
 
                 return result as IImageQueryResult;
             });
-        }
-
-        private async void DownloadShelvesetContent(string shelvesetId, string json, string personalAccessToken)
-        {
-            //Console.WriteLine(json);
-
-            var shelvesetFolder = $@"C:\Source\_shelvesets\{shelvesetId}";
-
-            if (JsonConvert.DeserializeObject(json) is JObject jObject)
-            {
-                if (jObject.TryGetValue("value", out JToken jValue))
-                {
-                    var sb = new StringBuilder();
-
-                    using (HttpClient client = new HttpClient())
-                    {
-                        string personalAccessTokenBase64 = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes($":{personalAccessToken}"));
-                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", personalAccessTokenBase64);
-
-                        foreach (var jTokenValue in jValue.ToArray())
-                        {
-                            string changeType = jTokenValue["changeType"].ToString();
-
-                            var item = jTokenValue["item"];
-                            var version = item["version"];
-                            var path = item["path"].ToString();
-                            var url = item["url"].ToString();
-
-                            sb.AppendLine($"{changeType}: {path}");
-
-                            if (new[] { "add", "edit" }.Contains(changeType))
-                            {
-                                var destPath = path.Replace('/', '\\').Replace("$", shelvesetFolder);
-
-                                EnsureFolderExists(Path.GetDirectoryName(destPath));
-
-                                using (var request = new HttpRequestMessage(HttpMethod.Get, url))
-                                {
-                                    using (
-                                        Stream contentStream = await (await client.SendAsync(request)).Content.ReadAsStreamAsync(),
-                                        stream = new FileStream(destPath, FileMode.Create, FileAccess.Write, FileShare.None))
-                                    {
-                                        await contentStream.CopyToAsync(stream);
-                                    }
-                                }
-                            }
-                        }
-
-                        File.WriteAllText(Path.Combine(shelvesetFolder, "shelveset_info.txt"), sb.ToString());
-                    }
-                }
-            }
         }
 
         private string FormatQueryString(params Tuple<string, string>[] queryArgs)

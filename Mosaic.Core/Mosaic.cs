@@ -149,12 +149,14 @@ namespace Mosaic.Core
                     {
                         var features = featureExtractor.ExtractFeatures(nextImage.RawImage);
 
-                        var remaining = cells.Where(cell => GetCompletedCell(cell.r, cell.c) != null).ToList();
+                        var remaining = cells.Where(cell => GetCompletedCell(cell.r, cell.c) == null).ToList();
                         foreach (var cell in remaining)
                         {
                             if (features.IsMatch(GetTargetCell(cell.r, cell.c)))
                             {
                                 SetCompletedCell(cell.r, cell.c, features.Image);
+
+                                System.Console.WriteLine($"!! MATCH found for target cell r:{cell.r}, c:{cell.c}");
                                 break;
                             }
                         }
