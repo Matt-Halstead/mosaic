@@ -14,7 +14,7 @@ namespace Mosaic.Core
 
             // for now just use a greyscale histo on one channel
             var histo = new ColorHistogram(image);
-            features.MeanRed = histo.RedHistogram.MeanOfNPercentile(0.5f);
+            features.MeanRed = histo.RedHistogram.MeanOfNPercentile(0.7f);
             //features.MeanGreen = histo.GreenHistogram.Mean();
             //features.MeanBlue = histo.BlueHistogram.Mean();
             return features;
