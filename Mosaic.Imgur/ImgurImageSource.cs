@@ -1,17 +1,20 @@
 ﻿using Mosaic.Interfaces.ImageSource;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Mosaic.Imgur
 {
+    // Downloads the results of image query requests sent to Imgur API, caching files locally for faster reuse.
     public class ImgurImageSource : IImageSource
     {
         private readonly IImageQuery _query;
         private readonly IImageQueryResolver _queryResolver;
 
-        private ConcurrentQueue<IImage> _queuedDownloads = new ConcurrentQueue<IImage>();
-        private ConcurrentQueue<IImage> _completedDownloads = new ConcurrentQueue<IImage>();
+        private readonly ConcurrentQueue<IImage> _queuedDownloads = new ConcurrentQueue<IImage>();
+        private readonly ConcurrentQueue<IImage> _completedDownloads = new ConcurrentQueue<IImage>();
 
         public ImgurImageSource(IImageQuery query, CancellationToken cancelToken)
         {
@@ -41,7 +44,6 @@ namespace Mosaic.Imgur
                     Thread.Sleep(100);
                 }
 
-                System.Console.WriteLine("There are no more images to download.");
                 return null;
             });
         }

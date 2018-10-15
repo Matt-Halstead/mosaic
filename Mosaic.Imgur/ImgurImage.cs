@@ -25,16 +25,32 @@ namespace Mosaic.Imgur
         {
             return Task.Run(async () =>
             {
-                HttpClient client = new HttpClient();
-                client.MaxResponseContentBufferSize = 256000;
-                using (var stream = await client.GetStreamAsync(Link))
+                try
                 {
-                    Image img = Image.FromStream(stream);
-                    RawImage = img;
-                }
+                    var tempFolder = Path.Combine(Path.GetTempPath(), "mosaic", "cells");
+                    var downloadPath = Path.Combine(tempFolder, $"{Id}.png");
 
-                System.Console.WriteLine($"Downloaded image from url: {Link}");
-                ImageUtils.DumpToTempFile(RawImage, @"mosaic\cells", $"img-{Id}.png");
+                    if (!File.Exists(downloadPath))
+                    {
+                        HttpClient client = new HttpClient();
+                        client.MaxResponseContentBufferSize = 256000;
+                        using (var stream = await client.GetStreamAsync(Link))
+                        {
+                            Image img = Image.FromStream(stream);
+                            RawImage = img;
+                        }
+
+                        System.Console.WriteLine($"DOWNLOADED {Link} --> {downloadPath}");
+                        ImageUtils.SaveImageToFile(RawImage, tempFolder, $"{Id}.png");
+                    }
+
+                    RawImage = Image.FromFile(downloadPath);
+                }
+                catch (Exception e)
+                {
+                    System.Console.WriteLine($"Error getting image {Id}: {e.Message}");
+                    RawImage = new Bitmap(10, 10, PixelFormat.Format24bppRgb);
+                }
 
                 return this as IImage;
             });
