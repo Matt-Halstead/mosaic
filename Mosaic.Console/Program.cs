@@ -3,7 +3,6 @@ using Mosaic.Imgur;
 using System;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -71,10 +70,26 @@ namespace Mosaic.Console
                 var mosaic = new Mosaic.Core.Mosaic(targetImage, targetSize, gridSize);
                 var imageSource = new ImgurImageSource();
                 var featureExtractor = new BasicImageFeatureExtractor();
-                var resultImage = mosaic.Build(imageSource, featureExtractor);
+                var resultImage = await mosaic.Build(imageSource, featureExtractor, cancelToken);
+
+                DumpToTempFile(resultImage);
 
                 _completedEvent.Set();
             });
+        }
+
+        private static void DumpToTempFile(Image resultImage)
+        {
+            var tempFile = Path.GetTempFileName();
+            resultImage.Save(tempFile);
+
+            var targetFolder = Path.Combine(Path.GetTempPath(), "mosaic");
+            Directory.CreateDirectory(targetFolder);
+
+            var filename = Path.Combine(targetFolder, $"Mosaic-{DateTime.Now.ToString("yyyyMMdd-HHmmss")}.png");
+            File.Move(tempFile, filename);
+
+            System.Console.WriteLine($"Wrote image to temp file: {filename}");
         }
     }
 }

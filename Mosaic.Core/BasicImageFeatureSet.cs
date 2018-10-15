@@ -1,5 +1,5 @@
 ﻿using Mosaic.Interfaces.Processing;
-using Mosaic.Interfaces.ImageSource;
+using System;
 using System.Drawing;
 
 namespace Mosaic.Core
@@ -12,10 +12,25 @@ namespace Mosaic.Core
         }
 
         public Image Image { get; private set; }
+        public byte MeanRed { get; set; }
+        public byte MeanGreen { get; set; }
+        public byte MeanBlue { get; set; }
 
-        internal void Extract()
+        public bool IsMatch(IImageFeatureSet other)
         {
-            // todo
+            if (other is BasicImageFeatureSet otherBasic)
+            {
+                return FuzzyEquals(MeanRed, otherBasic.MeanRed, 5) &&
+                    FuzzyEquals(MeanGreen, otherBasic.MeanGreen, 5) &&
+                    FuzzyEquals(MeanBlue, otherBasic.MeanBlue, 5);
+            }
+
+            return false;
+        }
+
+        private bool FuzzyEquals(byte a, byte b, byte tol)
+        {
+            return Math.Abs(a - b) < tol;
         }
     }
 }

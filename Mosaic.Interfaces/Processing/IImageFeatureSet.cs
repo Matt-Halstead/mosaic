@@ -6,5 +6,7 @@ namespace Mosaic.Interfaces.Processing
     public interface IImageFeatureSet
     {
         Image Image { get; }
+
+        bool IsMatch(IImageFeatureSet other);
     }
 }
