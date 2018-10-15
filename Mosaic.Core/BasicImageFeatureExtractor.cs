@@ -14,8 +14,8 @@ namespace Mosaic.Core
 
             var histo = new ColorHistogram(image);
             features.MeanRed = histo.RedHistogram.Mean();
-            features.MeanGreen = histo.GreenHistogram.Mean();
-            features.MeanBlue = histo.BlueHistogram.Mean();
+            //features.MeanGreen = histo.GreenHistogram.Mean();
+            //features.MeanBlue = histo.BlueHistogram.Mean();
             return features;
         }
     }
@@ -25,14 +25,14 @@ namespace Mosaic.Core
         //private readonly Dictionary<Color, int> _histo = new Dictionary<Color, int>();
 
         public GreyScaleHistogram RedHistogram { get; private set; }
-        public GreyScaleHistogram GreenHistogram { get; private set; }
-        public GreyScaleHistogram BlueHistogram { get; private set; }
+        //public GreyScaleHistogram GreenHistogram { get; private set; }
+        //public GreyScaleHistogram BlueHistogram { get; private set; }
 
         public ColorHistogram(Image image)
         {
             RedHistogram = new GreyScaleHistogram(image, GreyScaleHistogram.Channel.R);
-            GreenHistogram = new GreyScaleHistogram(image, GreyScaleHistogram.Channel.G);
-            BlueHistogram = new GreyScaleHistogram(image, GreyScaleHistogram.Channel.B);
+            //GreenHistogram = new GreyScaleHistogram(image, GreyScaleHistogram.Channel.G);
+            //BlueHistogram = new GreyScaleHistogram(image, GreyScaleHistogram.Channel.B);
 
             //Bitmap bm = (Bitmap)image;
 

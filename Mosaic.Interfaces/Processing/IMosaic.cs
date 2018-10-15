@@ -19,6 +19,6 @@ namespace Mosaic.Interfaces.Processing
         Image GetCompletedCell(int row, int col);
         void SetCompletedCell(int row, int col, Image cellImage);
 
-        Image GetCompletedImage();
+        Task<Image> CreateCompletedImage();
     }
 }

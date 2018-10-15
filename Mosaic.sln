@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mosaic.Interfaces", "Mosaic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mosaic.Core", "Mosaic.Core\Mosaic.Core.csproj", "{7BF800E3-7540-4082-A1D6-31678051FAFE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mosaic.Util", "Mosaic.Util\Mosaic.Util.csproj", "{FDC1AB98-072F-41EA-B0CD-713FDE6498A5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{7BF800E3-7540-4082-A1D6-31678051FAFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BF800E3-7540-4082-A1D6-31678051FAFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BF800E3-7540-4082-A1D6-31678051FAFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDC1AB98-072F-41EA-B0CD-713FDE6498A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDC1AB98-072F-41EA-B0CD-713FDE6498A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDC1AB98-072F-41EA-B0CD-713FDE6498A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDC1AB98-072F-41EA-B0CD-713FDE6498A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,9 +1,9 @@
 ﻿using Mosaic.Interfaces.ImageSource;
 using Mosaic.Interfaces.Processing;
+using Mosaic.Util;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -54,7 +54,7 @@ namespace Mosaic.Core
                 await InitCells(featureExtractor);
                 await AssignImagesToCells(imageSource, featureExtractor, cancelToken);
 
-                return GetCompletedImage();
+                return await CreateCompletedImage();
             });
         }
 
@@ -84,26 +84,29 @@ namespace Mosaic.Core
             }
         }
 
-        public Image GetCompletedImage()
+        public Task<Image> CreateCompletedImage()
         {
-            var completedImage = new Bitmap(TargetImageSize.Width, TargetImageSize.Height, PixelFormat.Format24bppRgb);
-            using (var g = Graphics.FromImage(completedImage))
+            return Task.Run(() =>
             {
-                for (int r = 0; r < GridSize.Height; r++)
+                var completedImage = new Bitmap(TargetImageSize.Width, TargetImageSize.Height, PixelFormat.Format24bppRgb);
+                using (var g = Graphics.FromImage(completedImage))
                 {
-                    for (int c = 0; c < GridSize.Width; c++)
+                    for (int r = 0; r < GridSize.Height; r++)
                     {
-                        var cellImage = _completedCells[r, c] ?? GetTargetCell(r, c).Image;
-                        g.DrawImage(
-                            cellImage,
-                            new Rectangle(CellSize.Width * c, CellSize.Height * r, CellSize.Width, CellSize.Height),
-                            new Rectangle(0, 0, cellImage.Width, cellImage.Height),
-                            GraphicsUnit.Pixel);
+                        for (int c = 0; c < GridSize.Width; c++)
+                        {
+                            var cellImage = _completedCells[r, c] ?? GetTargetCell(r, c).Image;
+                            g.DrawImage(
+                                cellImage,
+                                new Rectangle(CellSize.Width * c, CellSize.Height * r, CellSize.Width, CellSize.Height),
+                                new Rectangle(0, 0, cellImage.Width, cellImage.Height),
+                                GraphicsUnit.Pixel);
+                        }
                     }
                 }
-            }
 
-            return completedImage;
+                return completedImage as Image;
+            });
         }
 
         private Task InitCells(IImageFeatureExtractor featureExtractor)
@@ -114,7 +117,8 @@ namespace Mosaic.Core
                 _targetCellFeatures = new IImageFeatureSet[GridSize.Height, GridSize.Width];
 
                 // subdivide the target image into grid of (rows x cols) cells and extract features for each
-                var resizedTarget = new Bitmap(TargetImageSize.Width, TargetImageSize.Height, PixelFormat.Format24bppRgb);
+                var resizedTarget = ImageUtils.MakeGrayscale(new Bitmap(2, 2, PixelFormat.Format24bppRgb), TargetImageSize);
+                
                 using (var g = Graphics.FromImage(resizedTarget))
                 {
                     g.DrawImage(TargetImage, 0, 0, TargetImageSize.Width, TargetImageSize.Height);
@@ -143,7 +147,7 @@ namespace Mosaic.Core
                     var nextImage = await imageSource.GetNextImage(cancelToken);
                     if (nextImage != null)
                     {
-                        var nextImageReduced = new Bitmap(nextImage.RawImage, CellSize);
+                        var nextImageReduced = ImageUtils.MakeGrayscale(nextImage.RawImage, CellSize);
                         var features = featureExtractor.ExtractFeatures(nextImageReduced);
 
                         bool isMatch = false;

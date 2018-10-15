@@ -1,5 +1,6 @@
 ﻿using Mosaic.Core;
 using Mosaic.Imgur;
+using Mosaic.Util;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -73,24 +74,10 @@ namespace Mosaic.Console
                 var featureExtractor = new BasicImageFeatureExtractor();
                 var resultImage = await mosaic.Build(imageSource, featureExtractor, cancelToken);
 
-                DumpToTempFile(resultImage);
+                ImageUtils.DumpToTempFile(resultImage, "mosaic", $"Mosaic-{DateTime.Now.ToString("yyyyMMdd-HHmmss")}.png");
 
                 _completedEvent.Set();
             });
-        }
-
-        private static void DumpToTempFile(Image resultImage)
-        {
-            var tempFile = Path.GetTempFileName();
-            resultImage.Save(tempFile, ImageFormat.Png);
-
-            var targetFolder = Path.Combine(Path.GetTempPath(), "mosaic");
-            Directory.CreateDirectory(targetFolder);
-
-            var filename = Path.Combine(targetFolder, $"Mosaic-{DateTime.Now.ToString("yyyyMMdd-HHmmss")}.png");
-            File.Move(tempFile, filename);
-
-            System.Console.WriteLine($"Wrote image to temp file: {filename}");
         }
     }
 }

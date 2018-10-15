@@ -1,12 +1,10 @@
 ﻿using Mosaic.Interfaces.ImageSource;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -32,9 +30,11 @@ namespace Mosaic.Imgur
                         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                         //var url = @"https://api.imgur.com/3/gallery/search/top//1";
-                        var url = $@"https://api.imgur.com/3/gallery/search//{_page++}";
+                        var url = $@"https://api.imgur.com/3/gallery/search//{_page}";
                         var query = FormatQueryString(Tuple.Create("q", imageQuery.QueryString));
                         client.DefaultRequestHeaders.Add("Authorization", ImgurClientToken);
+
+                        _page++;
 
                         using (HttpResponseMessage response = await client.GetAsync($"{url}{query}"))
                         {
@@ -60,26 +60,6 @@ namespace Mosaic.Imgur
             var queryString = string.Join("&", queryArgs.Select(query => $"{query.Item1}={HttpUtility.UrlEncode(query.Item2)}"));
             queryString = string.IsNullOrEmpty(queryString) ? "" : $"?{queryString}";
             return queryString;
-        }
-
-        // todo, move to util assembly
-        public static void EnsureFolderExists(string path)
-        {
-            var folders = path.Split('\\');
-            var current = string.Empty;
-            foreach (var folder in folders)
-            {
-                current = Path.Combine(current, folder);
-                if (current.EndsWith(":"))
-                {
-                    current += "\\";
-                }
-
-                if (!Directory.Exists(current))
-                {
-                    Directory.CreateDirectory(current);
-                }
-            }
-        }
+        }        
     }
 }

@@ -20,9 +20,7 @@ namespace Mosaic.Core
         {
             if (other is BasicImageFeatureSet otherBasic)
             {
-                return FuzzyEquals(MeanRed, otherBasic.MeanRed, 5) &&
-                    FuzzyEquals(MeanGreen, otherBasic.MeanGreen, 5) &&
-                    FuzzyEquals(MeanBlue, otherBasic.MeanBlue, 5);
+                return FuzzyEquals(MeanRed, otherBasic.MeanRed, 5);
             }
 
             return false;

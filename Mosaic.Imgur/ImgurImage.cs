@@ -1,4 +1,5 @@
 ﻿using Mosaic.Interfaces.ImageSource;
+using Mosaic.Util;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -26,12 +27,14 @@ namespace Mosaic.Imgur
             {
                 HttpClient client = new HttpClient();
                 client.MaxResponseContentBufferSize = 256000;
-                Image img = Image.FromStream(await client.GetStreamAsync(Link));
-
-                RawImage = img;
+                using (var stream = await client.GetStreamAsync(Link))
+                {
+                    Image img = Image.FromStream(stream);
+                    RawImage = img;
+                }
 
                 System.Console.WriteLine($"Downloaded image from url: {Link}");
-                DumpToTempFile(this);
+                ImageUtils.DumpToTempFile(RawImage, @"mosaic\cells", $"img-{Id}.png");
 
                 return this as IImage;
             });
@@ -44,26 +47,5 @@ namespace Mosaic.Imgur
         public string ContentType { get; private set; }
         public List<string> Tags { get; private set; } = new List<string>();
         public Uri Link { get; private set; }
-
-        // Todo, copy pasta from Program.cs
-        private static void DumpToTempFile(IImage image)
-        {
-            var tempFile = Path.GetTempFileName();
-            image.RawImage.Save(tempFile, ImageFormat.Png);
-
-            var targetFolder = Path.Combine(Path.GetTempPath(), "mosaic", "cells");
-            Directory.CreateDirectory(targetFolder);
-
-            var filename = Path.Combine(targetFolder, $"img-{image.Id}.png");
-
-            if (File.Exists(filename))
-            {
-                File.Delete(filename);
-            }
-            File.Move(tempFile, filename);
-
-            System.Console.WriteLine($"Wrote image to temp file: {filename}");
-        }
-
     }
 }

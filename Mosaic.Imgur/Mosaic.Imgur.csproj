@@ -64,6 +64,10 @@
       <Project>{24AC7D7A-4073-4C8D-9229-7C18BCCCA641}</Project>
       <Name>Mosaic.Interfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Mosaic.Util\Mosaic.Util.csproj">
+      <Project>{FDC1AB98-072F-41EA-B0CD-713FDE6498A5}</Project>
+      <Name>Mosaic.Util</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
