@@ -32,13 +32,11 @@ namespace Mosaic.Util
             return newBitmap;
         }
 
-        public static void SaveImageToFile(Image image, string folder, string filenamePattern)
+        public static void SaveImageToFile(Image image, string filename)
         {
-            var targetPath = Path.Combine(folder, filenamePattern);
+            string folder = Path.GetDirectoryName(filename);
             FileUtils.EnsureFolderExists(folder);
-
-            image.Save(targetPath, ImageFormat.Png);
-            System.Console.WriteLine($"Wrote image to file: {targetPath}");
+            image.Save(filename, ImageFormat.Png);
         }
     }
 }

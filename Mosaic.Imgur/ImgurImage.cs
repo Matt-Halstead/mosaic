@@ -27,8 +27,7 @@ namespace Mosaic.Imgur
             {
                 try
                 {
-                    var tempFolder = Path.Combine(Path.GetTempPath(), "mosaic", "cells");
-                    var downloadPath = Path.Combine(tempFolder, $"{Id}.png");
+                    var downloadPath = Path.Combine(Path.GetTempPath(), "mosaic", "cells", $"{Id}.png");
 
                     if (!File.Exists(downloadPath))
                     {
@@ -41,7 +40,7 @@ namespace Mosaic.Imgur
                         }
 
                         System.Console.WriteLine($"DOWNLOADED {Link} --> {downloadPath}");
-                        ImageUtils.SaveImageToFile(RawImage, tempFolder, $"{Id}.png");
+                        ImageUtils.SaveImageToFile(RawImage, downloadPath);
                     }
 
                     RawImage = Image.FromFile(downloadPath);
@@ -56,7 +55,7 @@ namespace Mosaic.Imgur
             });
         }
 
-        public Image RawImage { get; private set; }
+        public Image RawImage { get; internal set; }
 
         public string Id { get; private set; }
         public string Title { get; private set; }

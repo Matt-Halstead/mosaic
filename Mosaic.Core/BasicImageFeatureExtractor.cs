@@ -12,8 +12,9 @@ namespace Mosaic.Core
         {
             var features = new BasicImageFeatureSet(image);
 
+            // for now just use a greyscale histo on one channel
             var histo = new ColorHistogram(image);
-            features.MeanRed = histo.RedHistogram.Mean();
+            features.MeanRed = histo.RedHistogram.MeanOfNPercentile(0.5f);
             //features.MeanGreen = histo.GreenHistogram.Mean();
             //features.MeanBlue = histo.BlueHistogram.Mean();
             return features;
@@ -106,18 +107,28 @@ namespace Mosaic.Core
             return _histo.OrderBy(pair => pair.Value).Last();
         }
 
-        public byte Mean()
+        public byte Mean() => Mean(_histo);
+
+        public byte Mean(IEnumerable<KeyValuePair<byte, int>> pairs)
         {
             int nValues = 0;
             long sum = 0;
 
-            foreach (var pair in _histo)
+            foreach (var pair in pairs)
             {
                 nValues += pair.Value;
                 sum += pair.Key * pair.Value;
             }
 
             return (byte)(sum / nValues);
+        }
+
+        // Returns a mean calculated only from the indicated fraction of the highest frequency bins.
+        public byte MeanOfNPercentile(float nFrac = 1.0f)
+        {
+            var nBins = Math.Max(1, (int)(_histo.Count * nFrac));
+            var ordered = _histo.OrderByDescending(pair => pair.Value).Take(nBins).ToArray();
+            return Mean(ordered);
         }
     }
 }

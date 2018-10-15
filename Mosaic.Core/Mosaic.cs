@@ -4,6 +4,7 @@ using Mosaic.Util;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -140,36 +141,34 @@ namespace Mosaic.Core
 
         private Task AssignImagesToCells(IImageSource imageSource, IImageFeatureExtractor featureExtractor, CancellationToken cancelToken)
         {
+            var remainingCells = (from R in Enumerable.Range(0, GridSize.Height)
+                                  from C in Enumerable.Range(0, GridSize.Width)
+                                  select new { R, C, Target = GetTargetCell(R, C) }).ToArray();
+
             return Task.Run(async () =>
             {
                 while (!cancelToken.IsCancellationRequested)
                 {
+                    if (IsComplete)
+                    {
+                        System.Console.WriteLine("Mosaic is complete!");
+                        break;
+                    }
+
                     var nextImage = await imageSource.GetNextImage(cancelToken);
                     if (nextImage != null)
                     {
+                        System.Console.WriteLine($"Attempting to match image {nextImage.Id} with remaining {remainingCells.Count()} cells...");
+
                         var nextImageReduced = ImageUtils.MakeGrayscale(nextImage.RawImage, CellSize);
                         var features = featureExtractor.ExtractFeatures(nextImageReduced);
 
-                        bool isMatch = false;
-                        for (int r = 0; r < GridSize.Height; r++)
+                        remainingCells = remainingCells.Where(c => GetCompletedCell(c.R, c.C) == null).ToArray();
+
+                        foreach (var cell in remainingCells.Where(c => features.IsMatch(c.Target)))
                         {
-                            if (isMatch)
-                            {
-                                break;
-                            }
-
-                            for (int c = 0; c < GridSize.Width; c++)
-                            {
-                                if (GetCompletedCell(r, c) == null && features.IsMatch(GetTargetCell(r, c)))
-                                {
-                                    SetCompletedCell(r, c, nextImageReduced);
-                                    //isMatch = true;
-
-                                    var remaining = GridSize.Width * GridSize.Height - _completedCellCount;
-                                    System.Console.WriteLine($"!! MATCH found for image id: '{nextImage.Id}' for target cell r:{r}, c:{c}.  Remaining: {remaining}");
-                                    break;
-                                }
-                            }
+                            SetCompletedCell(cell.R, cell.C, nextImageReduced);
+                            System.Console.WriteLine($"  MATCH: '{nextImage.Id}' --> cell r:{cell.R}, c:{cell.C}");
                         }
 
                         nextImage.RawImage.Dispose();

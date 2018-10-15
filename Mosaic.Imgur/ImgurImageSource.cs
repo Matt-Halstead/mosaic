@@ -1,6 +1,7 @@
 ﻿using Mosaic.Interfaces.ImageSource;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,6 +21,17 @@ namespace Mosaic.Imgur
         {
             _query = query;
             _queryResolver = new ImgurQueryResolver();
+
+            // Do an init check for local files.  A bit hacky but much faster.  Needs work!
+            var path = Path.Combine(Path.GetTempPath(), "mosaic", "cells");
+            var files = Directory.GetFiles(path, "*.png");
+            foreach (var file in files)
+            {
+                var fileBaseName = Path.GetFileNameWithoutExtension(file);
+                var newImage = new ImgurImage(fileBaseName, fileBaseName, "image/png", null, new string[0]);
+                _queuedDownloads.Enqueue(newImage);
+                System.Console.WriteLine($"FOUND cached image: {file}");
+            }
 
             StartDownloadingImages(cancelToken);
         }
@@ -59,7 +71,7 @@ namespace Mosaic.Imgur
                         await GetNextBatchOfImages(cancelToken);
                     }
 
-                    Thread.Sleep(5000);
+                    Thread.Sleep(1000);
                 }
 
                 System.Console.WriteLine("STOPPED downloading images.");
