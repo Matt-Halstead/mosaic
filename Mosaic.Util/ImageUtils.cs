@@ -32,22 +32,13 @@ namespace Mosaic.Util
             return newBitmap;
         }
 
-        public static void DumpToTempFile(Image image, string tempFolderPath, string filenamePattern)
+        public static void SaveImageToFile(Image image, string folder, string filenamePattern)
         {
-            var tempFile = Path.GetTempFileName();
-            image.Save(tempFile, ImageFormat.Png);
+            var targetPath = Path.Combine(folder, filenamePattern);
+            FileUtils.EnsureFolderExists(folder);
 
-            var targetFolder = Path.Combine(Path.GetTempPath(), tempFolderPath);
-            FileUtils.EnsureFolderExists(targetFolder);
-
-            var filename = Path.Combine(targetFolder, filenamePattern);
-            if (File.Exists(filename))
-            {
-                File.Delete(filename);
-            }
-            File.Move(tempFile, filename);
-
-            System.Console.WriteLine($"Wrote image to file: {filename}");
+            image.Save(targetPath, ImageFormat.Png);
+            System.Console.WriteLine($"Wrote image to file: {targetPath}");
         }
     }
 }

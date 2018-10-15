@@ -74,7 +74,8 @@ namespace Mosaic.Console
                 var featureExtractor = new BasicImageFeatureExtractor();
                 var resultImage = await mosaic.Build(imageSource, featureExtractor, cancelToken);
 
-                ImageUtils.DumpToTempFile(resultImage, "mosaic", $"Mosaic-{DateTime.Now.ToString("yyyyMMdd-HHmmss")}.png");
+                var tempFolder = Path.Combine(Path.GetTempPath(), "mosaic");
+                ImageUtils.SaveImageToFile(resultImage, tempFolder, $"Mosaic-{DateTime.Now.ToString("yyyyMMdd-HHmmss")}.png");
 
                 _completedEvent.Set();
             });
